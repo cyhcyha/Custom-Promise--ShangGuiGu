@@ -5,25 +5,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <!-- <script src="./Promise.js"></script> -->
+    <script src="./Promise.js"></script>
   </head>
   <body>
     <script>
+      //实例化对象
       let p = new Promise((resolve, reject) => {
         setTimeout(() => {
-          resolve('ok');
+          resolve('OK');
+          // reject('Error');
         }, 1000);
       });
-      p.then(() => {
-        setTimeout(() => {
-          console.log('timeout');
-        }, 1000);
-      });
-      // p.then(
-      //   (value) => console.log(value),
-      //   (value) => console.log(value)
-      // );
-      console.log(p);
+
+      //执行 then 方法
+      const res = p.then(
+        (value) => {
+          return 'oh Yeah';
+          // throw 'error';
+        },
+        (reason) => {
+          // console.warn(reason);
+          throw 'error';
+        }
+      );
+
+      console.log(res);
     </script>
   </body>
 </html>
