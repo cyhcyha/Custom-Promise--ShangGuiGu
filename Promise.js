@@ -39,6 +39,15 @@ function Promise(executor) {
 }
 
 Promise.prototype.then = function (onResolved, onRejected) {
+  //这里返回默认的函数是为了处理异常穿透和值穿透的功能
+  if (typeof onRejected !== 'function') {
+    onRejected = (value) => {
+      throw value;
+    };
+  }
+  if (typeof onResolved !== 'function') {
+    onResolved = (value) => value;
+  }
   //这里需要保存实例的指针，把promiseresult传给onResolved，保证在后续window调用resolve的时候可以拿到正确的promiseresult
   const self = this;
   return new Promise((resolve, reject) => {
@@ -88,4 +97,8 @@ Promise.prototype.then = function (onResolved, onRejected) {
       });
     }
   });
+};
+
+Promise.prototype.catch = function (onRejected) {
+  return this.then(undefined, onRejected);
 };
