@@ -15,7 +15,7 @@ function Promise(executor) {
     //setTimeout,将调用成功函数的任务放进异步队列,从而实现让then外面的同步代码先执行
     //其实这里setTimeout是宏任务，queueMicrotask才是微任务，才是promise的最终形式
     setTimeout(() => {
-      self.callbacks.forEach((item) => {
+      self.callback.forEach((item) => {
         item.onResolved(data);
       });
     });
@@ -39,6 +39,8 @@ function Promise(executor) {
 }
 
 Promise.prototype.then = function (onResolved, onRejected) {
+  //这里需要保存实例的指针，把promiseresult传给onResolved，保证在后续window调用resolve的时候可以拿到正确的promiseresult
+  const self = this;
   //这里返回默认的函数是为了处理异常穿透和值穿透的功能
   if (typeof onRejected !== 'function') {
     onRejected = (value) => {
@@ -48,8 +50,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
   if (typeof onResolved !== 'function') {
     onResolved = (value) => value;
   }
-  //这里需要保存实例的指针，把promiseresult传给onResolved，保证在后续window调用resolve的时候可以拿到正确的promiseresult
-  const self = this;
+
   return new Promise((resolve, reject) => {
     function callback(type) {
       try {
@@ -69,7 +70,6 @@ Promise.prototype.then = function (onResolved, onRejected) {
           //如果不是一个Promise那么直接返回这个值即可
           resolve(result);
         }
-        type(this.PromiseResult);
       } catch (e) {
         reject(e);
       }
@@ -101,4 +101,30 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 Promise.prototype.catch = function (onRejected) {
   return this.then(undefined, onRejected);
+};
+
+//注意，这个方法是属于Promise函数的，不是原型也不是实例的
+Promise.resolve = function (value) {
+  //返回新的promise对象
+  return new Promise((resolve, reject) => {
+    if (value instanceof Promise) {
+      value.then(
+        (v) => {
+          resolve(v);
+        },
+        (r) => {
+          reject(r);
+        }
+      );
+    } else {
+      resolve(value);
+    }
+  });
+};
+
+Promise.reject = function (reason) {
+  //无论传入什么都会终止promise链的调用
+  return new Promise((resolve, reject) => {
+    reject(reason);
+  });
 };

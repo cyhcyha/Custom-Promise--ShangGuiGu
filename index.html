@@ -5,31 +5,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <!-- <script src="./Promise.js"></script> -->
+    <script src="./Promise.js"></script>
   </head>
   <body>
     <script>
-      //实例化对象
-      let p = new Promise((resolve, reject) => {
-        setTimeout(() => {
+      const p = Promise.reject('Error');
+      const p2 = Promise.reject(
+        new Promise((resolve, reject) => {
           resolve('OK');
-          // reject('Error');
-        }, 1000);
-      });
-
-      //执行 then 方法
-      const res = p.then(
-        (value) => {
-          return 'oh Yeah';
-          // throw 'error';
-        },
-        (reason) => {
-          // console.warn(reason);
-          throw 'error';
-        }
+        })
       );
 
-      console.log(res);
+      console.log(p);
+      console.log(p2);
+      // //实例化对象
+      // let p = new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve('OK');
+      //     // reject('Error');
+      //   }, 1000);
+      // });
+
+      // // //执行 then 方法
+      // // const res = p.then(
+      // //   (value) => {
+      // //     return 'oh Yeah';
+      // //     // throw 'error';
+      // //   },
+      // //   (reason) => {
+      // //     // console.warn(reason);
+      // //     throw 'error';
+      // //   }
+      // // );
+
+      // let p2 = Promise.reject(
+      //   new Promise((resolve, reject) => {
+      //     resolve(ok);
+      //   })
+      // );
+
+      // console.log(p2);
     </script>
   </body>
 </html>
